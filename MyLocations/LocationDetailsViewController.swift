@@ -8,7 +8,7 @@
 
 import UIKit
 import CoreLocation
-
+import CoreData
 
 
 private let dateFormatter: NSDateFormatter = {
@@ -34,6 +34,10 @@ class LocationDetailsViewController: UITableViewController {
   var descriptionText = ""
   var categoryName = "No Category"
   
+  var managedObjectContext: NSManagedObjectContext!
+  
+  var date = NSDate()
+
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -51,7 +55,7 @@ class LocationDetailsViewController: UITableViewController {
       self.addressLabel.text = "No Address Found"
     }
     
-    self.dateLabel.text = formatDate(NSDate())
+    self.dateLabel.text = formatDate(date)
     
     
     let gestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("hideKeyboard:") )
@@ -136,6 +140,24 @@ class LocationDetailsViewController: UITableViewController {
     //println("Desceiption: '\(self.descriptionText)' ")
     let hudView = HudView.hudInView(navigationController!.view, animated: true)
     hudView.text = "Tagged"
+    
+    // 1 Create a new Location object. ask the NSEntityDescription class to insert a new object for your entity into the managed object context
+    let location = NSEntityDescription.insertNewObjectForEntityForName("Location", inManagedObjectContext: self.managedObjectContext) as Location
+    
+    // 2
+    location.locationDescription = self.descriptionText
+    location.category = self.categoryName
+    location.latitude = self.coordinate.latitude
+    location.longitude = self.coordinate.longitude
+    location.date = self.date
+    location.placemark = self.placemark
+    
+    // 3
+    var error: NSError?
+    if !managedObjectContext.save(&error) {
+      fatalCoreDataError(error)
+      return
+    }
     
     // Abstract GCD
     // trailing closure syntax

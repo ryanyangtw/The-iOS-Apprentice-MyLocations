@@ -7,15 +7,37 @@
 //
 
 import UIKit
+import CoreData
+
+let MyManagedObjectContextSaveDidFailNotification = "MyManagedObjectContextSaveDidFailNotification"
+
+func fatalCoreDataError(error: NSError?) {
+  if let error = error {
+    println("*** Fatal error: \(error), \(error.userInfo)")
+  }
+  
+  NSNotificationCenter.defaultCenter().postNotificationName(MyManagedObjectContextSaveDidFailNotification, object: error)
+}
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
 
-
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     // Override point for customization after application launch.
+    
+    let tabBarController = window!.rootViewController as UITabBarController
+    
+    if let tabBarViewControllers = tabBarController.viewControllers {
+      let currentLocationViewController = tabBarViewControllers[0] as CurrentLocationViewController
+      
+      currentLocationViewController.managedObjectContext = managedObjectContext
+    }
+    
+    // Registered the notification with NSNotificationCenter
+    listenForFatalCoreDataNotifications()
     return true
   }
 
@@ -40,7 +62,97 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func applicationWillTerminate(application: UIApplication) {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
   }
+  
+  
+  // Registered notification with NSNotificationCenter
+  func listenForFatalCoreDataNotifications() {
+    // 1 Tell NSNotificationCenter that you wnat to be notified whenver a MyManagedObjectContextSaveDidFailNotification is posted
+    NSNotificationCenter.defaultCenter().addObserverForName( MyManagedObjectContextSaveDidFailNotification, object: nil, queue: NSOperationQueue.mainQueue(),
+      usingBlock: { notification in
+        
+        // 2 Create a UIAlertController to show the error message
+        let alert = UIAlertController(title: "Internal Error", message: "There was a fatal error in the app and it cannot continue.\n\n" + "Press OK to terminate the app. Sorry for the inconvenience.", preferredStyle: .Alert)
+        
+        // 3
+        let action = UIAlertAction(title: "OK", style: .Default) { _ in
+          let exception = NSException(name: NSInternalInconsistencyException, reason: "Fatal Core Data error", userInfo: nil)
 
+          exception.raise()
+        }
+        
+        alert.addAction(action)
+
+        // 4
+        self.viewControllerForShowingAlert().presentViewController(alert, animated: true, completion: nil)
+    })
+    
+  }
+  
+  
+  // 5
+  func viewControllerForShowingAlert() -> UIViewController {
+    let rootViewController = self.window!.rootViewController!
+    
+    // TODO: presentedViewController????
+    if let presentedViewController = rootViewController.presentedViewController {
+      return presentedViewController
+    } else {
+      return rootViewController
+    }
+    
+  }
+  
+  
+// MARK: - Core Data
+  
+ 
+  // This code creates a lazily loded instance variable named managedObjectContext
+  lazy var managedObjectContext: NSManagedObjectContext = {
+    
+    // 1 Create an NSURL object pointing at this folder
+    if let modelURL = NSBundle.mainBundle().URLForResource("DataModel", withExtension: "momd") {
+      
+      // 2 Create NSManagedObjectModel fromt the URL
+      if let model = NSManagedObjectModel(contentsOfURL: modelURL) {
+        
+        // 3 NSPersistentStoreCoordinator is in charge of the SQLite database
+        let coordinator = NSPersistentStoreCoordinator( managedObjectModel: model)
+        
+        // 4 Create an NSURL object pointing at the DataStore.sqlite file
+        let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
+        
+        let documentsDirectory = urls[0] as NSURL
+        let storeURL = documentsDirectory.URLByAppendingPathComponent("DataStore.sqlite")
+        
+        println("\(storeURL)")
+        
+        // 5 Add the SQLite database to the store coordinator
+        var error: NSError?
+        
+        if let store = coordinator.addPersistentStoreWithType( NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil, error: &error) {
+          
+          // 6 Create the NSManagedObjectContext object and return it
+          let context = NSManagedObjectContext()
+          context.persistentStoreCoordinator = coordinator
+          return context
+        
+          // 7
+        } else {
+          println("Error adding persistent store at \(storeURL): \(error!) ")
+        }
+      
+      } else {
+        println("Error initializing model from: \(modelURL) ")
+      }
+    
+    } else {
+      println("Could not find data model in app bundle")
+    }
+    
+    abort()
+  
+  }()
+  
 
 }
 

@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import CoreData
 
 class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate {
   
@@ -30,6 +31,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
   var lastGeocodingError: NSError?
   
   var timer: NSTimer?
+  var managedObjectContext: NSManagedObjectContext!
   
   
 
@@ -319,6 +321,8 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
       
       controller.coordinate = self.location!.coordinate
       controller.placemark = self.placemark
+      
+      controller.managedObjectContext = self.managedObjectContext
       
     }
     
