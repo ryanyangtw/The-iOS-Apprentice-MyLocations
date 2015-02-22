@@ -37,10 +37,26 @@ class LocationDetailsViewController: UITableViewController {
   var managedObjectContext: NSManagedObjectContext!
   
   var date = NSDate()
+  
+  var locationToEdit: Location? {
+    didSet {
+      if let location = locationToEdit {
+        descriptionText = location.locationDescription
+        categoryName = location.category
+        date = location.date
+        coordinate = CLLocationCoordinate2DMake(location.latitude, location.longitude)
+        placemark = location.placemark
+      }
+    }
+  }
 
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    if let location = locationToEdit {
+      title = "Edit Location"
+    }
     
     self.descriptionTextView.text = self.descriptionText
     self.categoryLabel.text = self.categoryName
@@ -139,10 +155,20 @@ class LocationDetailsViewController: UITableViewController {
   @IBAction func done() {
     //println("Desceiption: '\(self.descriptionText)' ")
     let hudView = HudView.hudInView(navigationController!.view, animated: true)
-    hudView.text = "Tagged"
     
-    // 1 Create a new Location object. ask the NSEntityDescription class to insert a new object for your entity into the managed object context
-    let location = NSEntityDescription.insertNewObjectForEntityForName("Location", inManagedObjectContext: self.managedObjectContext) as Location
+    
+    var location: Location
+  
+    if let temp = locationToEdit {
+      hudView.text = "Updated"
+      location = temp
+    } else {
+      hudView.text = "Tagged"
+      
+      // 1 Create a new Location object. ask the NSEntityDescription class to insert a new object for your entity into the managed object context
+      location = NSEntityDescription.insertNewObjectForEntityForName("Location", inManagedObjectContext: self.managedObjectContext) as Location
+    }
+    
     
     // 2
     location.locationDescription = self.descriptionText

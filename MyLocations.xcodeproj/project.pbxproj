@@ -19,6 +19,8 @@
 		9432FEFF1A978B0300EDF399 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9432FEFE1A978B0300EDF399 /* Functions.swift */; };
 		9432FF021A983B2E00EDF399 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9432FF001A983B2E00EDF399 /* DataModel.xcdatamodeld */; };
 		9432FF061A9850D700EDF399 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9432FF051A9850D700EDF399 /* Location.swift */; };
+		944560131A98E4F40038859A /* LocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944560121A98E4F40038859A /* LocationsViewController.swift */; };
+		944560171A9982FD0038859A /* LocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944560161A9982FD0038859A /* LocationCell.swift */; };
 		948DC8011A9617410009965F /* LocationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948DC8001A9617410009965F /* LocationDetailsViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -49,6 +51,8 @@
 		9432FEFE1A978B0300EDF399 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		9432FF011A983B2E00EDF399 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		9432FF051A9850D700EDF399 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		944560121A98E4F40038859A /* LocationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationsViewController.swift; sourceTree = "<group>"; };
+		944560161A9982FD0038859A /* LocationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationCell.swift; sourceTree = "<group>"; };
 		948DC8001A9617410009965F /* LocationDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationDetailsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -91,7 +95,6 @@
 		941FFD111A90DE3900F2A2E3 /* MyLocations */ = {
 			isa = PBXGroup;
 			children = (
-				9432FF051A9850D700EDF399 /* Location.swift */,
 				941FFD141A90DE3900F2A2E3 /* AppDelegate.swift */,
 				941FFD161A90DE3900F2A2E3 /* CurrentLocationViewController.swift */,
 				948DC8001A9617410009965F /* LocationDetailsViewController.swift */,
@@ -102,8 +105,11 @@
 				941FFD1F1A90DE3900F2A2E3 /* LaunchScreen.xib */,
 				941FFD121A90DE3900F2A2E3 /* Supporting Files */,
 				9432FEFC1A975E0E00EDF399 /* HudView.swift */,
+				9432FF051A9850D700EDF399 /* Location.swift */,
 				9432FEFE1A978B0300EDF399 /* Functions.swift */,
 				9432FF001A983B2E00EDF399 /* DataModel.xcdatamodeld */,
+				944560121A98E4F40038859A /* LocationsViewController.swift */,
+				944560161A9982FD0038859A /* LocationCell.swift */,
 			);
 			path = MyLocations;
 			sourceTree = "<group>";
@@ -234,10 +240,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				948DC8011A9617410009965F /* LocationDetailsViewController.swift in Sources */,
+				944560131A98E4F40038859A /* LocationsViewController.swift in Sources */,
 				9432FF021A983B2E00EDF399 /* DataModel.xcdatamodeld in Sources */,
 				941FFD191A90DE3900F2A2E3 /* SecondViewController.swift in Sources */,
 				9432FEFD1A975E0E00EDF399 /* HudView.swift in Sources */,
 				9432FEFF1A978B0300EDF399 /* Functions.swift in Sources */,
+				944560171A9982FD0038859A /* LocationCell.swift in Sources */,
 				941FFD151A90DE3900F2A2E3 /* AppDelegate.swift in Sources */,
 				9432FEFB1A9721F000EDF399 /* CategoryPickerViewController.swift in Sources */,
 				9432FF061A9850D700EDF399 /* Location.swift in Sources */,

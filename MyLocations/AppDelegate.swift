@@ -34,6 +34,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       let currentLocationViewController = tabBarViewControllers[0] as CurrentLocationViewController
       
       currentLocationViewController.managedObjectContext = managedObjectContext
+      
+      let navigationController = tabBarViewControllers[1] as UINavigationController
+      let locationsViewController = navigationController.viewControllers[0] as LocationsViewController
+      locationsViewController.managedObjectContext = managedObjectContext
+      
+      // Fix the bug in ios8 (pagep.194). To sync the cache (trigger viewDidLoad in LocationsViewController)
+      let forceTheViewLoad = locationsViewController.view
     }
     
     // Registered the notification with NSNotificationCenter
