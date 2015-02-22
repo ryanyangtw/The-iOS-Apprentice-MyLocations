@@ -89,7 +89,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="752" y="-297"/>
+            <point key="canvasLocation" x="428" y="-157"/>
         </scene>
         <!--Tag Location-->
         <scene sceneID="qqq-W6-jy3">
@@ -279,7 +279,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5t4-mA-KYs" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2062" y="-17"/>
+            <point key="canvasLocation" x="2088" y="533"/>
         </scene>
         <!--Category Picker View Controller-->
         <scene sceneID="qgC-iQ-69d">
@@ -318,7 +318,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AH7-Wf-9K1" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="dX4-Ij-Z6c" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2517" y="-17"/>
+            <point key="canvasLocation" x="2543" y="533"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
@@ -333,11 +333,12 @@
                     <connections>
                         <segue destination="9pv-A4-QxB" kind="relationship" relationship="viewControllers" id="u7Y-xg-7CH"/>
                         <segue destination="XcI-Lq-T5u" kind="relationship" relationship="viewControllers" id="h3W-MA-4Fy"/>
+                        <segue destination="YJ1-Jj-TYg" kind="relationship" relationship="viewControllers" id="nKs-UQ-zZB"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="0.0" y="0.0"/>
+            <point key="canvasLocation" x="-63" y="533"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="AvX-eC-MTh">
@@ -355,7 +356,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="07F-Nj-Zd2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1620" y="-17"/>
+            <point key="canvasLocation" x="1646" y="533"/>
         </scene>
         <!--Locations-->
         <scene sceneID="6S8-od-0dq">
@@ -422,6 +423,55 @@
             </objects>
             <point key="canvasLocation" x="454" y="533"/>
         </scene>
+        <!--Map-->
+        <scene sceneID="mWv-5E-Nhb">
+            <objects>
+                <viewController id="YJ1-Jj-TYg" customClass="MapViewController" customModule="MyLocations" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ITb-Re-EQU">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" id="DGe-JA-0au">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <connections>
+                                    <outlet property="delegate" destination="YJ1-Jj-TYg" id="IL4-Xe-xY2"/>
+                                </connections>
+                            </mapView>
+                            <navigationBar contentMode="scaleToFill" id="KrI-xq-n97">
+                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <items>
+                                    <navigationItem title="Map" id="Gmj-W4-ixL">
+                                        <barButtonItem key="leftBarButtonItem" title="Locatinos" id="31R-Zg-IFe">
+                                            <connections>
+                                                <action selector="showLocations" destination="YJ1-Jj-TYg" id="kgz-gK-io9"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="User" id="3UQ-tA-sp0">
+                                            <connections>
+                                                <action selector="showUser" destination="YJ1-Jj-TYg" id="VYc-k5-sy7"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                                <connections>
+                                    <outlet property="delegate" destination="YJ1-Jj-TYg" id="roU-8r-Elx"/>
+                                </connections>
+                            </navigationBar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Map" id="Y1t-eu-Ixw"/>
+                    <connections>
+                        <outlet property="mapView" destination="DGe-JA-0au" id="Ghw-Sz-ePe"/>
+                        <segue destination="iH1-O3-5uv" kind="modal" identifier="EditLocation" id="KJ1-Tx-VPW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8qm-Ny-rGC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1004" y="1247"/>
+        </scene>
     </scenes>
     <resources>
         <image name="first" width="30" height="30"/>
@@ -432,6 +482,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="SJR-Wq-cnH"/>
+        <segue reference="KJ1-Tx-VPW"/>
     </inferredMetricsTieBreakers>
 </document>
