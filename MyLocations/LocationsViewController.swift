@@ -134,6 +134,7 @@ class LocationsViewController: UITableViewController {
     if editingStyle == .Delete {
       let location = fetchedResultsController.objectAtIndexPath(indexPath) as Location
       
+      location.removePhotoFile()
       managedObjectContext.deleteObject(location)
       
       var error: NSError?
@@ -197,10 +198,13 @@ extension LocationsViewController: NSFetchedResultsControllerDelegate {
         tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
       
       case .Update:
+        //println("indexPath.row: \(indexPath!.row)")
+        //println("indexPath.section: \(indexPath!.section)")
         println("*** NSFetchedResultsChangeUpdate (object)")
-        let cell = tableView.cellForRowAtIndexPath(indexPath!) as LocationCell
-        let location = controller.objectAtIndexPath(indexPath!) as Location
-        cell.configureForLocation(location)
+        if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? LocationCell {
+          let location = controller.objectAtIndexPath(indexPath!) as Location
+          cell.configureForLocation(location)
+        }
       
       case .Move:
         println("*** NSFetchedResultsChangeMove (object)")

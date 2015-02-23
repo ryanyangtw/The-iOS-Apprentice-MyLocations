@@ -170,6 +170,8 @@ class MapViewController: UIViewController {
       controller.managedObjectContext = managedObjectContext
       
       let button = sender as UIButton
+      
+      //println("***in prepareforsegue button.tag: \(button.tag)")
       let location = locations[button.tag]
       controller.locationToEdit = location
       

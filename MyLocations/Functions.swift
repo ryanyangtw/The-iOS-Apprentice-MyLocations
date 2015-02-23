@@ -15,3 +15,14 @@ func afterDelay(seconds: Double, closure: () -> ()) {
   dispatch_after(when, dispatch_get_main_queue(), closure)
 
 }
+
+let applicationDocumentsDirectory: String = {
+  let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as [String]
+  
+  return paths[0]
+}()
+
+
+
+
+

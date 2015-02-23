@@ -29,6 +29,11 @@ class LocationDetailsViewController: UITableViewController {
   @IBOutlet weak var addressLabel: UILabel!
   @IBOutlet weak var dateLabel: UILabel!
   
+  @IBOutlet weak var imageView: UIImageView!
+  @IBOutlet weak var addPhotoLabel: UILabel!
+  
+
+  
   var coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
   var placemark: CLPlacemark?
   var descriptionText = ""
@@ -37,6 +42,10 @@ class LocationDetailsViewController: UITableViewController {
   var managedObjectContext: NSManagedObjectContext!
   
   var date = NSDate()
+  
+  var image: UIImage?
+  
+  var observer: AnyObject!
   
   var locationToEdit: Location? {
     didSet {
@@ -50,13 +59,25 @@ class LocationDetailsViewController: UITableViewController {
     }
   }
 
+  deinit {
+    //println("*** deinit \(self) ")
+    NSNotificationCenter.defaultCenter().removeObserver(self.observer)
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
     if let location = locationToEdit {
       title = "Edit Location"
+      if location.hasPhoto {
+        if let image = location.photoImage {
+          showImage(image)
+          
+        }
+      }
     }
+    
+
     
     self.descriptionTextView.text = self.descriptionText
     self.categoryLabel.text = self.categoryName
@@ -77,10 +98,13 @@ class LocationDetailsViewController: UITableViewController {
     let gestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("hideKeyboard:") )
     gestureRecognizer.cancelsTouchesInView = false
     self.tableView.addGestureRecognizer(gestureRecognizer)
+    
+    listenForBackgroundNotification()
   
   }
   
   
+// MARK: - General Method
   func hideKeyboard(gestureRecognizer: UIGestureRecognizer) {
     
     let point = gestureRecognizer.locationInView(tableView)
@@ -104,33 +128,67 @@ class LocationDetailsViewController: UITableViewController {
   func formatDate(date: NSDate) -> String {
     return dateFormatter.stringFromDate(date)
   }
+  
+  func showImage(image: UIImage) {
 
-// MARK: - UITableViewDelegate
+    imageView.image = image
+    imageView.hidden = false
+
+    // use frame and center to position the view in hierarchy
+    imageView.frame = CGRect(x: 10, y: 10, width: 260, height: 260)
+    addPhotoLabel.hidden = true
+  }
+  
+  func listenForBackgroundNotification() {
+    println("In listenForBackgroundNotification")
+    self.observer = NSNotificationCenter.defaultCenter().addObserverForName(UIApplicationDidEnterBackgroundNotification, object: nil, queue: NSOperationQueue.mainQueue()) { [weak self] notification in
+      
+        if let strongSelf = self {
+                //println("self: \(self)")
+          if strongSelf.presentedViewController != nil {
+            strongSelf.dismissViewControllerAnimated(false, completion: nil)
+          }
+        
+          strongSelf.descriptionTextView.resignFirstResponder()
+        }
+      }
+  }
+  
+  
+
+// MARK: - UITableView Delegate
   
   // frame,bounds has ( origin(x,y), size(width,height) )
   // frame: The rame idscrives the position and size of a view in its parent view. The frame describe the outside
   // bounds: The bounds describe the inside
   override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-    if indexPath.section == 0 && indexPath.row == 0 {
-      return 88
-    } else if indexPath.section == 2 && indexPath.row == 2 {
-      // 1
-      self.addressLabel.frame.size = CGSize(width: view.bounds.size.width - 115, height: 10000)
-      
-      // 2 Removed any spare space to the right and bottom of the label
-        self.addressLabel.sizeToFit()
-
-      // 3
-      self.addressLabel.frame.origin.x = view.bounds.size.width - self.addressLabel.frame.size.width - 15
-  
-      
-      // 4
-      return self.addressLabel.frame.size.height + 20
-      
-    } else {
-      return 44
     
+    switch (indexPath.section, indexPath.row) {
+      
+      case (0, 0):
+        return 88
+      
+      case (1, _):
+          return imageView.hidden ? 44 : 280
+        
+      case (2, 2):
+        // 1
+        self.addressLabel.frame.size = CGSize(width: view.bounds.size.width - 115, height: 10000)
+        
+        // 2 Removed any spare space to the right and bottom of the label
+        self.addressLabel.sizeToFit()
+        
+        // 3
+        self.addressLabel.frame.origin.x = view.bounds.size.width - self.addressLabel.frame.size.width - 15
+        
+        // 4
+        return self.addressLabel.frame.size.height + 20
+        
+      default:
+        return 44
+
     }
+    
   }
   
   override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
@@ -146,6 +204,11 @@ class LocationDetailsViewController: UITableViewController {
   override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     if indexPath.section == 0 && indexPath.row == 0{
       self.descriptionTextView.becomeFirstResponder()
+    } else if indexPath.section == 1 && indexPath.row == 0{
+      tableView.deselectRowAtIndexPath(indexPath, animated: true)
+      pickPhoto()
+      //choosePhotoFromLibrary()
+      //takePhotoWithCamera()
     }
   }
 
@@ -167,6 +230,8 @@ class LocationDetailsViewController: UITableViewController {
       
       // 1 Create a new Location object. ask the NSEntityDescription class to insert a new object for your entity into the managed object context
       location = NSEntityDescription.insertNewObjectForEntityForName("Location", inManagedObjectContext: self.managedObjectContext) as Location
+      
+      location.photoID = nil
     }
     
     
@@ -177,6 +242,22 @@ class LocationDetailsViewController: UITableViewController {
     location.longitude = self.coordinate.longitude
     location.date = self.date
     location.placemark = self.placemark
+    
+    
+    if let image = self.image {
+      
+      if !location.hasPhoto {
+        location.photoID = Location.nextPhotoID()
+      }
+
+      // convert the UIImage into the JPEG format and return NSData object
+      let data = UIImageJPEGRepresentation(image, 0.5)
+      // 3
+      var error: NSError?
+      if !data.writeToFile(location.photoPath, options: .DataWritingAtomic, error: &error) {
+        println("Error writing file: \(error)")
+      }
+    }
     
     // 3
     var error: NSError?
@@ -233,4 +314,75 @@ extension LocationDetailsViewController: UITextViewDelegate {
     self.descriptionText = textView.text
   }
 }
+
+
+// MARK: - UIImagePickerController (All of codes about Image picker)
+
+extension LocationDetailsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+
+  func takePhotoWithCamera() {
+    let imagePicker = UIImagePickerController()
+    imagePicker.sourceType = .Camera
+    imagePicker.delegate = self
+    imagePicker.allowsEditing = true
+    presentViewController(imagePicker, animated: true, completion: nil)
+  }
+  
+  func choosePhotoFromLibrary() {
+    let imagePicker = UIImagePickerController()
+    imagePicker.sourceType = .PhotoLibrary
+    imagePicker.delegate = self
+    imagePicker.allowsEditing = true
+    presentViewController(imagePicker, animated: true, completion: nil)
+  }
+  
+  func pickPhoto() {
+    // isSourceTypeAvailable(): check whether where's a camera present
+    if UIImagePickerController.isSourceTypeAvailable(.Camera) {
+      showPhotoMenu()
+    } else {
+      choosePhotoFromLibrary()
+    }
+  }
+  
+  func showPhotoMenu() {
+    let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+    
+    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+    alertController.addAction(cancelAction)
+    
+    let takePhotoAction = UIAlertAction(title: "Take Photo", style: .Default, handler: { _ in self.takePhotoWithCamera()})
+    alertController.addAction(takePhotoAction)
+    
+    let chooseFromLibraryAction = UIAlertAction(title: "Choose From Library", style: .Default, handler: { _ in self.choosePhotoFromLibrary()})
+    alertController.addAction(chooseFromLibraryAction)
+    
+    presentViewController(alertController, animated: true, completion: nil)
+  }
+
+// MARK: - UIImagePickerController Delegate
+  
+  // This is the method that gets callled when the user has selected a photo in the image picker
+  func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+    
+    // TODO: rewite the logic to use a didSet property opserver on the image instance variable (p.229)
+    self.image = info[UIImagePickerControllerEditedImage] as UIImage?
+    
+    if let image = self.image {
+      showImage(image)
+    }
+    
+    tableView.reloadData()
+    dismissViewControllerAnimated(true, completion: nil)
+  }
+  
+  
+  func imagePickerCOntrollerDidCancel(picker: UIImagePickerController) {
+  
+    dismissViewControllerAnimated(true, completion: nil)
+  }
+
+}
+
+
 
