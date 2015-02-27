@@ -9,6 +9,8 @@
 import UIKit
 import CoreLocation
 import CoreData
+import QuartzCore  // Core Animation
+import AudioToolbox
 
 class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate {
   
@@ -18,6 +20,11 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
   @IBOutlet weak var addressLabel: UILabel!
   @IBOutlet weak var tagButton: UIButton!
   @IBOutlet weak var getButton: UIButton!
+  @IBOutlet weak var containerView: UIView!
+  
+  
+  @IBOutlet weak var latitudeTextLabel: UILabel!
+  @IBOutlet weak var longitudeTextLabel: UILabel!
   
   let locationManager = CLLocationManager()
   var location: CLLocation?
@@ -33,12 +40,29 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
   var timer: NSTimer?
   var managedObjectContext: NSManagedObjectContext!
   
+  var logoVisible = false
+  
+  var soundID: SystemSoundID = 0
+  
+  lazy var logoButton: UIButton = {
+    let button = UIButton.buttonWithType(.Custom) as UIButton
+    button.setBackgroundImage(UIImage(named: "Logo"), forState: .Normal)
+    button.sizeToFit()
+    button.addTarget(self, action: Selector("getLocation"), forControlEvents: .TouchUpInside)
+
+    button.center.x = CGRectGetMidX(self.view.bounds)
+    button.center.y = 220
+    
+    return button
+  }()
+  
   
 
   override func viewDidLoad() {
     super.viewDidLoad()
     updateLabels()
     configureGetButton()
+    loadSoundEffect("Sound.caf")
     // Do any additional setup after loading the view, typically from a nib.
   }
 
@@ -71,7 +95,9 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
   }
   
   func stopLocationManager() {
+    //println("In stopLocationManger")
     if self.updatingLocation {
+      //println("self.updatingLocation = true")
       
       if let timer = self.timer {
         timer.invalidate()
@@ -88,6 +114,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     println("*** Time out")
     
     if self.location == nil {
+      //println("before stopLocationManager")
       stopLocationManager()
       lastLocationError = NSError(domain: "MyLocationsErrorDomain", code: 1, userInfo: nil)
       
@@ -119,6 +146,8 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
         self.addressLabel.text = "No Address Found"
       }
       
+      latitudeTextLabel.hidden = false
+      longitudeTextLabel.hidden = false
       
     } else {
       
@@ -142,44 +171,147 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
       } else if self.updatingLocation {
         statusMessage = "Searching..."
       } else {
-        statusMessage = "Tap 'Get My Location' to Start"
+        //statusMessage = "Tap 'Get My Location' to Start"
+        statusMessage = ""
+        showLogoView()
       }
 
       self.messageLabel.text = statusMessage
+      
+      latitudeTextLabel.hidden = true
+      longitudeTextLabel.hidden = true
     }
   }
   
   func configureGetButton() {
-    if self.updatingLocation {
-      self.getButton.setTitle("Stop", forState: .Normal)
+    
+    let spinnerTag = 1000
+    
+    if updatingLocation {
+      getButton.setTitle("stop", forState: .Normal)
+      
+      if view.viewWithTag(spinnerTag) == nil {
+        let spinner = UIActivityIndicatorView(activityIndicatorStyle: .White)
+        
+        spinner.center = messageLabel.center
+        spinner.center.y += spinner.bounds.size.height/2 + 15
+        spinner.startAnimating()
+        spinner.tag = spinnerTag
+        containerView.addSubview(spinner)
+      }
+      
     } else {
-      self.getButton.setTitle("Get My Location", forState: .Normal)
+    
+      getButton.setTitle("Get My Location", forState: .Normal)
+      
+      if let spinner = view.viewWithTag(spinnerTag){
+        spinner.removeFromSuperview()
+      }
+      
     }
   }
   
   
   
+
+  
   func stringFromPlacemark(placemark: CLPlacemark) -> String {
     
-    /*
-    println("subThoroughfare : \(placemark.subThoroughfare)")
-    println("thoroughfare : \(placemark.thoroughfare)")
-    println("locality : \(placemark.locality)")
-    println("subThorougadministrativeAreahfare : \(placemark.administrativeArea)")
-    println("postalCode : \(placemark.postalCode)")
-    */
+    var line1 = ""
+    line1.addText(placemark.subThoroughfare)
+    line1.addText(placemark.thoroughfare, withSeparator: " ")
     
+    var line2 = ""
+    line2.addText(placemark.locality)
+    line2.addText(placemark.administrativeArea, withSeparator: " ")
+    line2.addText(placemark.postalCode, withSeparator: " ")
+    
+    if line1.isEmpty {
+      return line2 + "\n "
+    } else {
+      return line1 + "\n" + line2
+    }
+    
+    
+    /*
     return
       "\(placemark.subThoroughfare) \(placemark.thoroughfare)\n" +
         "\(placemark.locality) \(placemark.administrativeArea) " +
     "\(placemark.postalCode)"
-    
+    */
   
   }
   
+
+// MARK: - Logo View
+  func showLogoView() {
+    if !logoVisible {
+      logoVisible = true
+      containerView.hidden = true
+      view.addSubview(logoButton)
+    }
+  }
+  
+  func hideLogoView() {
+    
+    if !logoVisible { return }
+    
+    logoVisible = false
+    containerView.hidden = false
+    
+    
+    containerView.center.x = view.bounds.size.width * 2
+    containerView.center.y = 40 + containerView.bounds.size.height / 2
+    
+    let centerX = CGRectGetMidX(view.bounds)
+    
+    let panelMover = CABasicAnimation(keyPath: "position")
+    panelMover.removedOnCompletion = false
+    panelMover.fillMode = kCAFillModeBackwards
+    panelMover.duration = 0.6
+    panelMover.fromValue = NSValue(CGPoint: containerView.center)
+    panelMover.toValue = NSValue(CGPoint: CGPoint(x: centerX, y: containerView.center.y) )
+    panelMover.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+    panelMover.delegate = self
+    
+    containerView.layer.addAnimation(panelMover, forKey: "panelMover")
+    
+    let logoMover = CABasicAnimation(keyPath: "position")
+    logoMover.removedOnCompletion = false
+    logoMover.fillMode = kCAFillModeForwards
+    logoMover.duration = 0.5
+    logoMover.fromValue = NSValue(CGPoint: logoButton.center)
+    logoMover.toValue = NSValue(CGPoint: CGPoint(x: -centerX, y: logoButton.center.y) )
+    logoMover.timingFunction = CAMediaTimingFunction( name: kCAMediaTimingFunctionEaseIn)
+    logoButton.layer.addAnimation(logoMover, forKey: "logoMover")
+    
+    let logoRotator = CABasicAnimation(keyPath: "transform.rotation.z")
+    logoRotator.removedOnCompletion = false
+    logoRotator.fillMode = kCAFillModeForwards
+    logoRotator.duration = 0.5
+    logoRotator.fromValue = 0.0
+    logoRotator.toValue = -2 * M_PI
+    logoRotator.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
+    
+    logoButton.layer.addAnimation(logoRotator, forKey: "logoRotator")
+    
+    //logoButton.removeFromSuperview()
+  }
+  
+// MARK: - animation delegate
+  
+  // This cleans up after the animations and removes the logo button
+  override func animationDidStop(anim: CAAnimation!, finished flag: Bool) {
+    containerView.layer.removeAllAnimations()
+    containerView.center.x = view.bounds.size.width / 2
+    containerView.center.y = 40 + containerView.bounds.size.height / 2
+    
+    logoButton.layer.removeAllAnimations()
+    logoButton.removeFromSuperview()
+  }
   
   
-//MARK: - CLLocationManagerDelegate
+// MARK: - CLLocationManagerDelegate
   func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
     println("didFailWithError \(error)")
     
@@ -238,30 +370,33 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
         }
       }
 
-    }
-    
-
-    
-    if !performingReverseGeocoding {
-      println("*** Going to geocode")
-      
-      self.performingReverseGeocoding = true
-      self.geocoder.reverseGeocodeLocation(self.location, completionHandler: {
-        placemarks, error in
+      if !performingReverseGeocoding {
+        println("*** Going to geocode")
         
-        //println("*** Found placemarks: \(placemarks), error: \(error) ")
-        
-        self.lastGeocodingError = error
-        if error == nil && !placemarks.isEmpty {
-          self.placemark = placemarks.last as? CLPlacemark
-        } else {
-          self.placemark = nil
-        }
-        
-        self.performingReverseGeocoding = false
-        self.updateLabels()
-        
-      })
+        self.performingReverseGeocoding = true
+        self.geocoder.reverseGeocodeLocation(self.location, completionHandler: {
+          placemarks, error in
+          
+          //println("*** Found placemarks: \(placemarks), error: \(error) ")
+          
+          self.lastGeocodingError = error
+          if error == nil && !placemarks.isEmpty {
+            
+            if self.placemark == nil {
+              println("FIRST TIME!")
+              self.playSoundEffect()
+            }
+            
+            self.placemark = placemarks.last as? CLPlacemark
+          } else {
+            self.placemark = nil
+          }
+          
+          self.performingReverseGeocoding = false
+          self.updateLabels()
+          
+        })
+      }
     } else if distance < 1.0 {
       
       let timeInterval = newLocation.timestamp.timeIntervalSinceDate(self.location!.timestamp)
@@ -293,11 +428,15 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
       return
     }
     
+    if logoVisible {
+      hideLogoView()
+    }
+    
     
     if self.updatingLocation {
       stopLocationManager()
     } else {
-      // Clear out the old location ans error objects before starting looking for a new location
+      // Clear out the old location and error objects before starting looking for a new location
       self.location = nil
       self.lastLocationError = nil
       self.placemark = nil
@@ -326,6 +465,35 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
       
     }
     
+  }
+  
+// MARK: - Sound Eddect
+  func loadSoundEffect(name: String) {
+  
+    if let path = NSBundle.mainBundle().pathForResource(name, ofType: nil) {
+    
+      let fileURL = NSURL.fileURLWithPath(path, isDirectory: false)
+      if fileURL == nil {
+        println("NSURL is nil for path: \(path)")
+        return
+      }
+      
+      // reference to that object in the soundID instance variable
+      let error = AudioServicesCreateSystemSoundID(fileURL, &soundID)
+      if Int(error) != kAudioServicesNoError {
+        println("Error code \(error) loading sound at path: \(path)")
+      }
+    }
+    
+  }
+  
+  func unloadSoundEffect() {
+    AudioServicesDisposeSystemSoundID(soundID)
+    soundID = 0
+  }
+  
+  func playSoundEffect() {
+    AudioServicesPlaySystemSound(soundID)
   }
   
 

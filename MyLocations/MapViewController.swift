@@ -204,6 +204,8 @@ extension MapViewController: MKMapViewDelegate {
         annotationView.animatesDrop = false
         annotationView.pinColor = .Green
         
+        annotationView.tintColor = UIColor(white: 0.0, alpha: 0.5)
+        
         // 4 Implement target-action pattern manually
         let rightButton = UIButton.buttonWithType(.DetailDisclosure) as UIButton
         
