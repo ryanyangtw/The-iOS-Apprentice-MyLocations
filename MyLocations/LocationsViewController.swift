@@ -39,6 +39,7 @@ class LocationsViewController: UITableViewController {
   }()
   
   deinit {
+    // TODO: Why should I set delegate to nil? Ownership cycle?
     fetchedResultsController.delegate = nil
   }
   

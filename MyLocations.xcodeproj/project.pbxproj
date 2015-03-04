@@ -123,19 +123,16 @@
 				9432FEFA1A9721F000EDF399 /* CategoryPickerViewController.swift */,
 				941FFD1A1A90DE3900F2A2E3 /* Main.storyboard */,
 				941FFD121A90DE3900F2A2E3 /* Supporting Files */,
-				9432FEFC1A975E0E00EDF399 /* HudView.swift */,
-				9432FF051A9850D700EDF399 /* Location.swift */,
-				9432FEFE1A978B0300EDF399 /* Functions.swift */,
-				9432FF001A983B2E00EDF399 /* DataModel.xcdatamodeld */,
 				944560121A98E4F40038859A /* LocationsViewController.swift */,
-				944560161A9982FD0038859A /* LocationCell.swift */,
 				9445601A1A99D3CA0038859A /* MapViewController.swift */,
-				94CB37B61A9B697D0058A6CE /* UIImage+Resize.swift */,
-				94D531621A9CBA7C0040E2E6 /* String+AddText.swift */,
-				94D531641A9D7C080040E2E6 /* Images.xcassets */,
 				94D531661A9D7D8B0040E2E6 /* MyTabBarController.swift */,
 				94D531681A9D7FA60040E2E6 /* MyNavigationController.swift */,
 				94D5316A1A9D80A80040E2E6 /* MyImagePickerController.swift */,
+				9432FEFE1A978B0300EDF399 /* Functions.swift */,
+				94D531641A9D7C080040E2E6 /* Images.xcassets */,
+				94A9BDD31AA726B300149C70 /* Model */,
+				94A9BDD41AA726E500149C70 /* View */,
+				94A9BDD51AA7270500149C70 /* Extension */,
 				941789C11A9F6CCF0090C398 /* Sound */,
 			);
 			path = MyLocations;
@@ -164,6 +161,33 @@
 				941FFD2B1A90DE3900F2A2E3 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		94A9BDD31AA726B300149C70 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				9432FF001A983B2E00EDF399 /* DataModel.xcdatamodeld */,
+				9432FF051A9850D700EDF399 /* Location.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		94A9BDD41AA726E500149C70 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				944560161A9982FD0038859A /* LocationCell.swift */,
+				9432FEFC1A975E0E00EDF399 /* HudView.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		94A9BDD51AA7270500149C70 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				94CB37B61A9B697D0058A6CE /* UIImage+Resize.swift */,
+				94D531621A9CBA7C0040E2E6 /* String+AddText.swift */,
+			);
+			name = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

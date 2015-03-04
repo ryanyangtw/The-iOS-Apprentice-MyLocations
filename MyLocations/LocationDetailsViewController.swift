@@ -183,7 +183,7 @@ class LocationDetailsViewController: UITableViewController {
 // MARK: - UITableView Delegate
   
   // frame,bounds has ( origin(x,y), size(width,height) )
-  // frame: The rame idscrives the position and size of a view in its parent view. The frame describe the outside
+  // frame: The frame describes the position and size of a view in its parent view. The frame describe the outside
   // bounds: The bounds describe the inside
   override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     
@@ -440,7 +440,7 @@ extension LocationDetailsViewController: UIImagePickerControllerDelegate, UINavi
   }
   
   
-  func imagePickerCOntrollerDidCancel(picker: UIImagePickerController) {
+  func imagePickerControllerDidCancel(picker: UIImagePickerController) {
   
     dismissViewControllerAnimated(true, completion: nil)
   }

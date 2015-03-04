@@ -43,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       let locationsViewController = navigationController.viewControllers[0] as LocationsViewController
       locationsViewController.managedObjectContext = managedObjectContext
       
-      // Fix the bug in ios8 (pagep.194). To sync the cache (trigger viewDidLoad in LocationsViewController)
+      // Fix the bug in ios8 (page.194). To sync the cache (trigger viewDidLoad in LocationsViewController)
       let forceTheViewLoad = locationsViewController.view
       
       // tab 3
@@ -118,10 +118,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   
   func customizeAppearance() {
+    // TODO: what does this UINavigationBar mean?
     UINavigationBar.appearance().barTintColor = UIColor.blackColor()
     
     UINavigationBar.appearance().titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
     
+    // TODO: what does this UITabBar mean?
     UITabBar.appearance().barTintColor = UIColor.blackColor()
     
     let tintColor = UIColor(red: 255/255.0, green: 238/255.0, blue: 136/255.0, alpha: 1.0)

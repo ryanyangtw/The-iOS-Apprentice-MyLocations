@@ -26,7 +26,7 @@ class HudView: UIView {
   }
   
   
-  // who called it?
+  // TODO: who called it?
   override func drawRect(rect: CGRect) {
 
     let boxWidth: CGFloat = 96
