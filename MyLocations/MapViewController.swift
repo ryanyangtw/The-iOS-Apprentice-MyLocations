@@ -23,29 +23,69 @@ class MapViewController: UIViewController {
       NSNotificationCenter.defaultCenter().addObserverForName(NSManagedObjectContextObjectsDidChangeNotification, object: managedObjectContext, queue: NSOperationQueue.mainQueue()) { notification in
         
         
-        // TODO: reloading of the locations more efficient by not re-fetching the entire list of Location objects (page 218)
-        if let dictionary = notification.userInfo {
-          //println("*********inserted**********")
-          println(dictionary["inserted"])
-          //println("*********end with inserted**********")
-          
-          //println("*********deleted**********")
-          println(dictionary["deleted"])
-          //println("*********end with deleted**********")
-          
-          //println("*********updated**********")
-          println(dictionary["updated"])
-          //println("*********end of updated**********")
+        // Exercise p.218: reloading of the locations more efficient by not re-fetching the entire list of Location objects (page 218)
+        if self.isViewLoaded() {
+          if let dictionary = notification.userInfo {
+            if dictionary["inserted"] != nil {
+              println("dictionary inserted")
+              
+              if let inserted: AnyObject = dictionary["inserted"] {
+                let asSet = inserted as NSSet
+                let asArray = asSet.allObjects as [Location]
+                self.mapView.addAnnotations(asArray)
+              }
+              
+              /*
+              let insertedLocation = dictionary["inserted"] as? [Location]
+              self.mapView.addAnnotations(self.locations)
+              */
+            }
+            
+            if dictionary["deleted"] != nil {
+              println("dictionary deleted")
+              if let deleted: AnyObject = dictionary["deleted"] {
+                let asSet = deleted as NSSet
+                let asArray = asSet.allObjects as [Location]
+                self.mapView.removeAnnotations(asArray)
+                
+              }
+              
+              /*
+              let deletedLocation = dictionary["deleted"] as? [Location]
+              //println("deletedLocation: \(deletedLocation)")
+              */
+            }
+            
+            if dictionary["updated"] != nil {
+              
+              println("dictionary updated")
+              if let updated: AnyObject = dictionary["updated"] {
+                let asSet = updated as NSSet
+                let asArray = asSet.allObjects as [Location]
+                self.mapView.removeAnnotations(asArray)
+                self.mapView.addAnnotations(asArray)
+              }
+              
+              /*
+              let updatedLocation = dictionary["updated"] as? [Location]
+              self.mapView.removeAnnotations(updatedLocation)
+              self.mapView.addAnnotations(updatedLocation)
+              */
+            }
+          }
         }
         
+        /*
         if self.isViewLoaded() {
           self.updateLocations()
         }
+        */
       }
     }
   }
   
   override func viewDidLoad() {
+    println("In mapViewController viewDidLoad")
     super.viewDidLoad()
     
     updateLocations()
@@ -68,7 +108,7 @@ class MapViewController: UIViewController {
   
 // MARK: - Method
   func updateLocations() {
-  
+    println("In updateLocations")
     let entity = NSEntityDescription.entityForName("Location", inManagedObjectContext: managedObjectContext)
     
     let fetchRequest = NSFetchRequest()
