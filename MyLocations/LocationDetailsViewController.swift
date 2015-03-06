@@ -71,7 +71,6 @@ class LocationDetailsViewController: UITableViewController {
   }
   
   override func viewDidLoad() {
-    println("fuckiing viewDidLoad")
     super.viewDidLoad()
     
     if let location = locationToEdit {
@@ -79,7 +78,6 @@ class LocationDetailsViewController: UITableViewController {
       if location.hasPhoto {
         if let image = location.photoImage {
           showImage(image)
-          
         }
       }
     }
@@ -166,7 +164,7 @@ class LocationDetailsViewController: UITableViewController {
     imageView.hidden = false
 
     // use frame and center to position the view in hierarchy
-    imageView.frame = CGRect(x: 10, y: 10, width: 260, height: 260)
+    imageView.frame = CGRect(x: 10, y: 10, width: 260, height: Int(260/image.aspectRatio))
     addPhotoLabel.hidden = true
   }
   
@@ -194,13 +192,34 @@ class LocationDetailsViewController: UITableViewController {
   // bounds: The bounds describe the inside
   override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
     
+    println("In tableView heightForRowAtIndex")
     switch (indexPath.section, indexPath.row) {
       
       case (0, 0):
         return 88
       
       case (1, _):
-          return imageView.hidden ? 44 : 280
+        if imageView.hidden {
+          return 44
+        } else {
+          
+          // Exercise p.232: Make the height of the photo table view cell dynamic, depending on the aspect ratio(image.size.width/image.size.height) of the image
+          let additionalMargin = CGFloat(20.0)
+          
+          var cellHeightForImage: CGFloat
+          
+          if let image = self.image {
+            cellHeightForImage = (imageView.frame.width / image.aspectRatio) + additionalMargin
+          } else if let image = self.locationToEdit?.photoImage {
+            cellHeightForImage = (imageView.frame.width / image.aspectRatio) + additionalMargin
+          } else {
+            cellHeightForImage = CGFloat(280)
+          }
+
+          return cellHeightForImage
+        }
+      
+        //return imageView.hidden ? 44 : 280
         
       case (2, 2):
         // 1

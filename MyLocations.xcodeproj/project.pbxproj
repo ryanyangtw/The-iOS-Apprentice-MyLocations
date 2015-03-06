@@ -12,6 +12,7 @@
 		941FFD171A90DE3900F2A2E3 /* CurrentLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941FFD161A90DE3900F2A2E3 /* CurrentLocationViewController.swift */; };
 		941FFD1C1A90DE3900F2A2E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 941FFD1A1A90DE3900F2A2E3 /* Main.storyboard */; };
 		941FFD2D1A90DE3900F2A2E3 /* MyLocationsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941FFD2C1A90DE3900F2A2E3 /* MyLocationsTests.swift */; };
+		94263FB91AA95D5C008808E7 /* UIImage+aspectRatio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94263FB81AA95D5C008808E7 /* UIImage+aspectRatio.swift */; };
 		9432FEFB1A9721F000EDF399 /* CategoryPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9432FEFA1A9721F000EDF399 /* CategoryPickerViewController.swift */; };
 		9432FEFD1A975E0E00EDF399 /* HudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9432FEFC1A975E0E00EDF399 /* HudView.swift */; };
 		9432FEFF1A978B0300EDF399 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9432FEFE1A978B0300EDF399 /* Functions.swift */; };
@@ -50,6 +51,7 @@
 		941FFD261A90DE3900F2A2E3 /* MyLocationsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyLocationsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		941FFD2B1A90DE3900F2A2E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		941FFD2C1A90DE3900F2A2E3 /* MyLocationsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyLocationsTests.swift; sourceTree = "<group>"; };
+		94263FB81AA95D5C008808E7 /* UIImage+aspectRatio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+aspectRatio.swift"; sourceTree = "<group>"; };
 		9432FEFA1A9721F000EDF399 /* CategoryPickerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryPickerViewController.swift; sourceTree = "<group>"; };
 		9432FEFC1A975E0E00EDF399 /* HudView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HudView.swift; sourceTree = "<group>"; };
 		9432FEFE1A978B0300EDF399 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 		94A9BDD51AA7270500149C70 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				94263FB81AA95D5C008808E7 /* UIImage+aspectRatio.swift */,
 				94CB37B61A9B697D0058A6CE /* UIImage+Resize.swift */,
 				94D531621A9CBA7C0040E2E6 /* String+AddText.swift */,
 			);
@@ -303,6 +306,7 @@
 				94D531631A9CBA7C0040E2E6 /* String+AddText.swift in Sources */,
 				941FFD151A90DE3900F2A2E3 /* AppDelegate.swift in Sources */,
 				9432FEFB1A9721F000EDF399 /* CategoryPickerViewController.swift in Sources */,
+				94263FB91AA95D5C008808E7 /* UIImage+aspectRatio.swift in Sources */,
 				9432FF061A9850D700EDF399 /* Location.swift in Sources */,
 				941FFD171A90DE3900F2A2E3 /* CurrentLocationViewController.swift in Sources */,
 				94D531671A9D7D8B0040E2E6 /* MyTabBarController.swift in Sources */,
