@@ -43,7 +43,13 @@ class LocationDetailsViewController: UITableViewController {
   
   var date = NSDate()
   
-  var image: UIImage?
+  var image: UIImage? {
+    didSet {
+      if let image = self.image {
+        showImage(image)
+      }
+    }
+  }
   
   var observer: AnyObject!
   
@@ -65,6 +71,7 @@ class LocationDetailsViewController: UITableViewController {
   }
   
   override func viewDidLoad() {
+    println("fuckiing viewDidLoad")
     super.viewDidLoad()
     
     if let location = locationToEdit {
@@ -428,12 +435,15 @@ extension LocationDetailsViewController: UIImagePickerControllerDelegate, UINavi
   // This is the method that gets callled when the user has selected a photo in the image picker
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
     
-    // TODO: rewite the logic to use a didSet property opserver on the image instance variable (p.229)
+    // Exercise p.229: rewite the logic to use a didSet property opserver on the image instance variable (p.229)
     self.image = info[UIImagePickerControllerEditedImage] as UIImage?
     
+    // This code was replaced with a property observer utilizing a didSet block for variable, image
+    /*
     if let image = self.image {
       showImage(image)
     }
+    */
     
     tableView.reloadData()
     dismissViewControllerAnimated(true, completion: nil)

@@ -25,6 +25,7 @@ class MapViewController: UIViewController {
         
         // Exercise p.218: reloading of the locations more efficient by not re-fetching the entire list of Location objects (page 218)
         if self.isViewLoaded() {
+          
           if let dictionary = notification.userInfo {
             if dictionary["inserted"] != nil {
               println("dictionary inserted")
