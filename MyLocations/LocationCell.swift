@@ -77,7 +77,9 @@ class LocationCell: UITableViewCell {
     if location.hasPhoto {
       if let image = location.photoImage {
         // scale down the images before putting them into the table view cell will speed up the processing
+        
         return image.resizedImageWithBounds(CGSize(width: 52, height: 52))
+        //return image.resizedImageToFillWithBounds(CGSize(width: 52, height: 52))
       }
     }
     // return empty placeholder image
