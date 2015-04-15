@@ -45,7 +45,7 @@ class CategoryPickerViewController: UITableViewController {
   
   override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     
-    let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as UITableViewCell
+    let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell
     
     let categoryName = self.categories[indexPath.row]
     cell.textLabel!.text = categoryName
@@ -99,7 +99,7 @@ class CategoryPickerViewController: UITableViewController {
   // Unwind Segue
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
     if segue.identifier == "PickedCategory" {
-      let cell = sender as UITableViewCell
+      let cell = sender as! UITableViewCell
       if let indexPath = tableView.indexPathForCell(cell) {
         //println("In unwind segue, selfectedCaetgoryName: \(self.selectedCategoryName) ")
         

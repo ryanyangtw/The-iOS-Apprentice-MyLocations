@@ -31,8 +31,8 @@ class MapViewController: UIViewController {
               println("dictionary inserted")
               
               if let inserted: AnyObject = dictionary["inserted"] {
-                let asSet = inserted as NSSet
-                let asArray = asSet.allObjects as [Location]
+                let asSet = inserted as! NSSet
+                let asArray = asSet.allObjects as! [Location]
                 self.mapView.addAnnotations(asArray)
               }
               
@@ -45,8 +45,8 @@ class MapViewController: UIViewController {
             if dictionary["deleted"] != nil {
               println("dictionary deleted")
               if let deleted: AnyObject = dictionary["deleted"] {
-                let asSet = deleted as NSSet
-                let asArray = asSet.allObjects as [Location]
+                let asSet = deleted as! NSSet
+                let asArray = asSet.allObjects as! [Location]
                 self.mapView.removeAnnotations(asArray)
                 
               }
@@ -61,8 +61,8 @@ class MapViewController: UIViewController {
               
               println("dictionary updated")
               if let updated: AnyObject = dictionary["updated"] {
-                let asSet = updated as NSSet
-                let asArray = asSet.allObjects as [Location]
+                let asSet = updated as! NSSet
+                let asArray = asSet.allObjects as! [Location]
                 self.mapView.removeAnnotations(asArray)
                 self.mapView.addAnnotations(asArray)
               }
@@ -126,7 +126,7 @@ class MapViewController: UIViewController {
     // Remove the old objects
     mapView.removeAnnotations(locations)
     
-    locations = foundObjects as [Location]
+    locations = foundObjects as! [Location]
     mapView.addAnnotations(locations)
     
   }
@@ -204,13 +204,13 @@ class MapViewController: UIViewController {
 // MARK: - Prepare For Segue
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
     if segue.identifier == "EditLocation" {
-      let navigationController = segue.destinationViewController as UINavigationController
+      let navigationController = segue.destinationViewController as! UINavigationController
     
-      let controller = navigationController.topViewController as LocationDetailsViewController
+      let controller = navigationController.topViewController as! LocationDetailsViewController
     
       controller.managedObjectContext = managedObjectContext
       
-      let button = sender as UIButton
+      let button = sender as! UIButton
       
       //println("***in prepareforsegue button.tag: \(button.tag)")
       let location = locations[button.tag]
@@ -234,7 +234,7 @@ extension MapViewController: MKMapViewDelegate {
     
       // 2
       let identifier = "Location"
-      var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier) as MKPinAnnotationView!
+      var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier) as! MKPinAnnotationView!
       
       if annotationView == nil {
         annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
@@ -248,7 +248,7 @@ extension MapViewController: MKMapViewDelegate {
         annotationView.tintColor = UIColor(white: 0.0, alpha: 0.5)
         
         // 4 Implement target-action pattern manually
-        let rightButton = UIButton.buttonWithType(.DetailDisclosure) as UIButton
+        let rightButton = UIButton.buttonWithType(.DetailDisclosure) as! UIButton
         
         rightButton.addTarget(self, action: Selector("showLocationDetails:"), forControlEvents: .TouchUpInside)
         
@@ -259,8 +259,8 @@ extension MapViewController: MKMapViewDelegate {
       }
   
       // 5
-      let button = annotationView.rightCalloutAccessoryView as UIButton
-      if let index = find(locations, annotation as Location) {
+      let button = annotationView.rightCalloutAccessoryView as! UIButton
+      if let index = find(locations, annotation as! Location) {
         button.tag = index
       }
       

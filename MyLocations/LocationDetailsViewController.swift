@@ -284,7 +284,7 @@ class LocationDetailsViewController: UITableViewController {
     
     
     if indexPath.row == 2 {
-      let addressLabel = cell.viewWithTag(100) as UILabel
+      let addressLabel = cell.viewWithTag(100) as! UILabel
       addressLabel.textColor = UIColor.whiteColor()
       
       // 被點擊時顯示的顏色
@@ -313,7 +313,7 @@ class LocationDetailsViewController: UITableViewController {
       hudView.text = "Tagged"
       
       // 1 Create a new Location object. ask the NSEntityDescription class to insert a new object for your entity into the managed object context
-      location = NSEntityDescription.insertNewObjectForEntityForName("Location", inManagedObjectContext: self.managedObjectContext) as Location
+      location = NSEntityDescription.insertNewObjectForEntityForName("Location", inManagedObjectContext: self.managedObjectContext) as! Location
       
       location.photoID = nil
     }
@@ -364,7 +364,7 @@ class LocationDetailsViewController: UITableViewController {
   
   @IBAction func categoryPickerDidPickCategory( segue: UIStoryboardSegue) {
     //println("in categoryPickerDidPickCategory")
-    let controller = segue.sourceViewController as CategoryPickerViewController
+    let controller = segue.sourceViewController as! CategoryPickerViewController
     self.categoryName = controller.selectedCategoryName
     self.categoryLabel.text = self.categoryName
   
@@ -375,7 +375,7 @@ class LocationDetailsViewController: UITableViewController {
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
     if segue.identifier == "PickCategory" {
       
-      let controller = segue.destinationViewController as CategoryPickerViewController
+      let controller = segue.destinationViewController as! CategoryPickerViewController
       controller.selectedCategoryName = self.categoryName
     }
   
@@ -455,7 +455,7 @@ extension LocationDetailsViewController: UIImagePickerControllerDelegate, UINavi
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
     
     // Exercise p.229: rewite the logic to use a didSet property opserver on the image instance variable (p.229)
-    self.image = info[UIImagePickerControllerEditedImage] as UIImage?
+    self.image = info[UIImagePickerControllerEditedImage] as? UIImage
     
     // This code was replaced with a property observer utilizing a didSet block for variable, image
     /*

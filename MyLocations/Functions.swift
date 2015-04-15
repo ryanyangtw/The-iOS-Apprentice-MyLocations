@@ -17,7 +17,7 @@ func afterDelay(seconds: Double, closure: () -> ()) {
 }
 
 let applicationDocumentsDirectory: String = {
-  let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as [String]
+  let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as! [String]
   
   return paths[0]
 }()

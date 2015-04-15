@@ -95,14 +95,14 @@ class LocationsViewController: UITableViewController {
   }
   
   override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    let sectionInfo = fetchedResultsController.sections![section] as NSFetchedResultsSectionInfo
+    let sectionInfo = fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
     
     return sectionInfo.name!.uppercaseString
   }
   
   override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     
-    let sectionInfo =  fetchedResultsController.sections![section] as NSFetchedResultsSectionInfo
+    let sectionInfo =  fetchedResultsController.sections![section] as! NSFetchedResultsSectionInfo
     
     return sectionInfo.numberOfObjects
     //return locations.count
@@ -111,10 +111,10 @@ class LocationsViewController: UITableViewController {
   
   override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
   
-    let cell = tableView.dequeueReusableCellWithIdentifier("LocationCell") as LocationCell
+    let cell = tableView.dequeueReusableCellWithIdentifier("LocationCell") as! LocationCell
     
     //let location = locations[indexPath.row]
-    let location = fetchedResultsController.objectAtIndexPath(indexPath) as Location
+    let location = fetchedResultsController.objectAtIndexPath(indexPath) as! Location
     
     cell.configureForLocation(location)
   
@@ -137,7 +137,7 @@ class LocationsViewController: UITableViewController {
   
   override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
     if editingStyle == .Delete {
-      let location = fetchedResultsController.objectAtIndexPath(indexPath) as Location
+      let location = fetchedResultsController.objectAtIndexPath(indexPath) as! Location
       
       location.removePhotoFile()
       managedObjectContext.deleteObject(location)
@@ -190,16 +190,16 @@ class LocationsViewController: UITableViewController {
 
     if segue.identifier == "EditLocation" {
 
-      let navigationController = segue.destinationViewController as UINavigationController
+      let navigationController = segue.destinationViewController as! UINavigationController
       
-      let controller = navigationController.topViewController as LocationDetailsViewController
+      let controller = navigationController.topViewController as! LocationDetailsViewController
       
       controller.managedObjectContext = self.managedObjectContext
       
 
-      if let indexPath = tableView.indexPathForCell(sender as UITableViewCell) {  // cast sender to UITableViewCell
+      if let indexPath = tableView.indexPathForCell(sender as! UITableViewCell) {  // cast sender to UITableViewCell
         //let location = locations[indexPath.row]
-        let location = fetchedResultsController.objectAtIndexPath(indexPath) as Location
+        let location = fetchedResultsController.objectAtIndexPath(indexPath) as! Location
         controller.locationToEdit = location
       }
       
@@ -237,7 +237,7 @@ extension LocationsViewController: NSFetchedResultsControllerDelegate {
         //println("indexPath.section: \(indexPath!.section)")
         println("*** NSFetchedResultsChangeUpdate (object)")
         if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? LocationCell {
-          let location = controller.objectAtIndexPath(indexPath!) as Location
+          let location = controller.objectAtIndexPath(indexPath!) as! Location
           cell.configureForLocation(location)
         }
       
